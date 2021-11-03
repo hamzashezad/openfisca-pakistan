@@ -3,7 +3,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name = "OpenFisca-Country-Template",
+    name = "OpenFisca-Pakistan",
     version = "3.13.1",
     author = "OpenFisca Team",
     author_email = "contact@openfisca.org",
@@ -17,7 +17,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering :: Information Analysis",
         ],
-    description = "OpenFisca tax and benefit system for Country-Template",
+    description = "OpenFisca tax and benefit system for Pakistan",
     keywords = "benefit microsimulation social tax",
     license = "http://www.fsf.org/licensing/licenses/agpl-3.0.html",
     url = "https://github.com/openfisca/country-template",

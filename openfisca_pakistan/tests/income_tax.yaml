@@ -1,9 +1,31 @@
 # Test files describe situations and their expected outcomes
-# We can run this test on our command line using `openfisca-run-test income_tax.yaml`
+# We can run this test on our command line using `openfisca income_tax.yaml`
 
-- name: Someone making 10000 should pay 1500 of taxes
-  period: 2017-01
+- name: "Someone making 500000 yearly should pay 0 taxes"
+  # is the period dependant on the definition in variables/
+  period: 2022
   input:
-    salary: 10000
+    salary: 500000
   output:
-    income_tax: 1500
+    income_tax: 0
+
+- name: "Someone making 900000 yearly should pay 15000 taxes"
+  period: 2022
+  input:
+    salary: 900000
+  output:
+    income_tax: 15000
+
+- name: "Someone making 1600000 yearly should pay 70000"
+  period: 2022
+  input:
+    salary: 1800000
+  output:
+    income_tax: 90000
+
+- name: "Someone making 2961840 yearly should pay 275822"
+  period: 2022
+  input:
+    salary: 2961840
+  output:
+    income_tax: 275822

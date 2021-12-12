@@ -11,7 +11,7 @@ See https://openfisca.org/doc/key-concepts/variables.html
 from numpy import maximum as max_
 from openfisca_core.periods import MONTH, YEAR
 from openfisca_core.variables import Variable
-
+from openfisca_core.populations import ADD
 # Import the Entities specifically defined for this tax and benefit system
 from openfisca_pakistan.entities import Household, Person
 
@@ -19,7 +19,7 @@ from openfisca_pakistan.entities import Household, Person
 class income_tax(Variable):
     value_type = float
     entity = Person
-    definition_period = MONTH
+    definition_period = YEAR
     label = "Income tax"
     reference = "https://law.gov.example/income_tax"  # Always use the most official source
 
@@ -29,7 +29,10 @@ class income_tax(Variable):
 
         The formula to compute the income tax for a given person at a given period
         """
-        return person("salary", period) * parameters(period).taxes.income_tax_rate
+        # period is a year because definition_period for this variable is YEAR
+        salary = person("salary", period, options = [ADD])
+        scale = parameters(period).taxes.income_tax
+        return scale.calc(salary)
 
 
 class social_security_contribution(Variable):

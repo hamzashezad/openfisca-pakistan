@@ -7,39 +7,43 @@ See https://openfisca.org/doc/key-concepts/variables.html
 """
 
 # Import from openfisca-core the Python objects used to code the legislation in OpenFisca
-from openfisca_core.periods import MONTH
+from openfisca_core.periods import MONTH, YEAR
 from openfisca_core.variables import Variable
-
 # Import the Entities specifically defined for this tax and benefit system
 from openfisca_pakistan.entities import Household, Person
+from openfisca_core.populations import ADD
+from numpy import minimum as min_
 
 
-class basic_income(Variable):
+class tax_credits(Variable):
     value_type = float
     entity = Person
-    definition_period = MONTH
-    label = "Basic income provided to adults"
-    reference = "https://law.gov.example/basic_income"  # Always use the most official source
+    definition_period = YEAR
+    label = "Tax credits"
+    reference = ""
 
-    def formula_2016_12(person, period, parameters):
-        """
-        Basic income provided to adults.
+    def formula(person, period, parameters):
 
-        Since Dec 1st 2016, the basic income is provided to any adult, without considering their income.
-        """
-        age_condition = person("age", period) >= parameters(period).general.age_of_majority
-        return age_condition * parameters(period).benefits.basic_income  # This '*' is a vectorial 'if'. See https://openfisca.org/doc/coding-the-legislation/25_vectorial_computing.html#control-structures
+        # not person("charity", period).donation
+        # how then to access organisation of each donation?
+        return person("charity_tax_credits", period)
 
-    def formula_2015_12(person, period, parameters):
-        """
-        Basic income provided to adults.
 
-        From Dec 1st 2015 to Nov 30 2016, the basic income is provided to adults who have no income.
-        Before Dec 1st 2015, the basic income does not exist in the law, and calculating it returns its default value, which is 0.
-        """
-        age_condition = person("age", period) >= parameters(period).general.age_of_majority
-        salary_condition = person("salary", period) == 0
-        return age_condition * salary_condition * parameters(period).benefits.basic_income  # The '*' is also used as a vectorial 'and'. See https://openfisca.org/doc/coding-the-legislation/25_vectorial_computing.html#boolean-operations
+class charity_tax_credits(Variable):
+    value_type = float
+    entity = Person
+    definition_period = YEAR
+    label = "Tax credits on charitiable donations"
+    reference = ""
+
+    def formula(person, period, parameters):
+        donations = person("donation", period)
+        total_taxes = person("income_tax", period)
+        taxable_income = person("salary", period, options = [ADD])
+        divisor = min_(0.3 * taxable_income, donations)
+        charity_tax_credits = (total_taxes / taxable_income) * divisor
+
+        return charity_tax_credits
 
 
 class housing_allowance(Variable):

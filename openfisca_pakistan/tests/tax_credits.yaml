@@ -1,0 +1,40 @@
+# Test files describe situations and their expected outcomes
+# We can run this test on our command line using `openfisca tax_credits.yaml`
+
+- name: "Someone making 500000 yearly, who donated 100000 should pay 0 taxes and get 0 tax credits"
+  # is the period dependant on the definition in variables/
+  period: 2022
+  input:
+    salary: 500000
+    donation: 100000
+  output:
+    income_tax: 0
+    tax_credits: 0
+
+- name: "Someone making 900000 yearly, who donated 100000 should pay 15000 taxes and get _ tax credits"
+  period: 2022
+  input:
+    salary: 900000
+    donation:
+      - 100000
+  output:
+    income_tax: 15000
+    tax_credits: 1666.6667
+
+- name: "Someone making 1600000 yearly, who donated 100000 should pay 90000 and get 90000 tax credits"
+  period: 2022
+  input:
+    salary: 1800000
+    donation: 100000
+  output:
+    income_tax: 90000
+    tax_credits: 5000
+
+- name: "Someone making 2961840, who donated 100000 yearly should pay 275822, and get _ tax credits"
+  period: 2022
+  input:
+    salary: 2961840
+    donation: 100000
+  output:
+    income_tax: 275822
+    tax_credits: 9312.52194582
